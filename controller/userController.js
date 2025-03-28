@@ -4,23 +4,49 @@ const User = require("../module/userModule.js");
 
 const registerUser = async (req, res) => {
     try {
-        let { name, email, UserName, password, phoneNumber, sex, maritalStatus} = req.body;
+        let { phoneNumber, email, password , UserName } = req.body;
 
         // validate required fields
     if (
-        !name ||
-        ! email ||
-        ! UserName ||
-        ! password ||
         ! phoneNumber ||
-        ! sex ||
-        ! maritalStatus 
-    )  {
-     return res
-        . status (400)
-        . json ({ message : "ALL FIELDS REQUIRED"});
+        ! email ||
+        ! password ||
+        ! UserName 
 
-    }  
+    )
+    {
+        return res
+           . status (400)
+           . json ({ message : "ALL FIELDS REQUIRED"});
+   
+       }
+       
+    // try {
+    //     let { name, email, UserName, password, phoneNumber, sex, maritalStatus} = req.body;
+
+    //     // validate required fields
+    // if (
+    //     !name ||
+    //     ! email ||
+    //     ! UserName ||
+    //     ! password ||
+    //     ! phoneNumber ||
+    //     ! sex ||
+    //     ! maritalStatus 
+
+    // {
+    //  return res
+    //     . status (400)
+    //     . json ({ message : "ALL FIELDS REQUIRED"});
+
+    // }  
+
+    // check if user  exist
+    const existingUser = await User.findOne({email});
+    if (existingUser){
+        return
+        res.status(400).json({message:"Email already exists"});
+    }
 
     // Hash the password
     const salt = await bcrypt.genSalt(10);
@@ -29,13 +55,20 @@ const registerUser = async (req, res) => {
 
     // save user in database
     const newUser = new User({
-        name,
-        email,
-        UserName,
-        password : hashedPassword,
+        // name,
+        // email,
+        // UserName,
+        // password : hashedPassword,
+        // phoneNumber,
+        // sex,
+        // maritalStatus,
+
+        
         phoneNumber,
-        sex,
-        maritalStatus,
+        email,
+        password : hashedPassword,
+        UserName
+        
     });
 
     // Register user in database
@@ -47,12 +80,13 @@ const registerUser = async (req, res) => {
         console.error("registration Error", error);
 
         // handle duplicate key errors
-    if (error.code === 1100) {
+    if (error.code === 11000) {
         return res.status(400).json({
             message : "Duplicate value",
-            field : Object.keys(err.keyValue),
+            field : Object.keys(error.keyValue),
         
         });
+    }
     res
         .status(500)
         .json ({message: "Error registering user", err: error.message});
@@ -60,7 +94,7 @@ const registerUser = async (req, res) => {
     
     }
 }
-};
+
 
 // login user
 

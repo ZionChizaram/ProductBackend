@@ -4,7 +4,7 @@ const UserSchema = mongoose.Schema(
     {
         name: {
             type: String,
-            required: true,
+            //required: true,
         },
 
         password: {
@@ -27,18 +27,18 @@ const UserSchema = mongoose.Schema(
 
         sex: {
             type: String,
-            required: true,
+            //required: true,
         },
 
         maritalStatus: {
             type: String,
-            required: true,
+            //required: true,
         },
 
         UserName: {
             type: String,
             required: true,
-            unique: true ,
+            unique: true 
         },
     },
     {

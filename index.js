@@ -9,20 +9,20 @@ const app = express();
 app.use(express.json());
 dotenv.config();
 
-// routes
-app.use("/api/user", userRoute);
 app.use(cors({
-    origin: 'http://localhost:8000',
+    origin:[ 'http://localhost:8000', 'http://localhost:3000'],
     methods: ['GET', 'POST'],
     credentials: true
 }));
 
+
+// routes
+app.use("/api/user", userRoute);
+
 //app.use(cors());
 
 //app.use(express.json());
-app.listen(8000,() => {
-    console.log("server is running in port 8000")
-});
+
 // app.use("/api/product",async (req,res) => {
 //     try {
 //         const product = await Product.create(req.body);
@@ -85,6 +85,9 @@ app.listen(8000,() => {
     )
     .then(() => {
         console.log("database connected");
+        app.listen(8000,() => {
+            console.log("server is running in port 8000")
+        });
     })
     .catch(() => {
         console.log("database not connected");
